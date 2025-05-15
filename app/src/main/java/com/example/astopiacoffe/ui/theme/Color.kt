@@ -22,3 +22,14 @@ val ColorScheme.appBackground: Color
 val ColorScheme.reverseTextColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.White else Color.Black
+
+val ColorScheme.appButtonColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF5D4037) else Color(0xFF5D4037)
+
+val ColorScheme.appSelectedIndicatorColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFF795548) else Color(0xFF795548)
+val ColorScheme.appUnSelectedIndicatorColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFD9D9D9) else Color(0xFFD9D9D9)

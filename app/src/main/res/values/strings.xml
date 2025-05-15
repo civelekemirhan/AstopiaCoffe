@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">Astopia Coffe</string>
+
+    <string name="app_name">Astopia Coffee</string>
+    <string name="onboarding_title_1">Hoş Geldin!</string>
+    <string name="onboarding_subtitle_1">Kahve Dünyasına Adım At</string>
+    <string name="onboarding_description_1">Farklı türde kahveleri keşfet, beğendiğin kahveleri favorilerine ekle ve damak tadına en uygun lezzeti bul.</string>
+    <string name="onboarding_title_2">Kahveleri Keşfet</string>
+    <string name="onboarding_subtitle_2">Zengin Kahve Koleksiyonu</string>
+    <string name="onboarding_description_2">Espresso’dan Türk kahvesine, dünyanın dört bir yanından özenle seçilmiş kahveler parmaklarının ucunda.</string>
+    <string name="onboarding_title_3">Detayları İncele</string>
+    <string name="onboarding_subtitle_3">Her Kahvenin Bir Hikayesi Var</string>
+    <string name="onboarding_description_3">Aroma, kavrulma derecesi ve demleme önerileriyle kahveleri daha yakından tanı. Hemen başlayalım!</string>
+
 </resources>
