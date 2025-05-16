@@ -31,14 +31,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.example.astopiacoffe.feature.model.CoffeModel
+import com.example.astopiacoffe.feature.model.CoffeeModel
 import com.example.astopiacoffe.ui.theme.coffeItemColor
 import com.valentinilk.shimmer.shimmer
 
 @Composable
-fun CoffeItem(item: CoffeModel?,onClick: () -> Unit = {}) {
+fun CoffeItem(item: CoffeeModel?, onClick: () -> Unit = {}) {
 
-    val context= LocalContext.current
     if (item != null) {
 
         Card(
@@ -86,7 +85,7 @@ fun CoffeItem(item: CoffeModel?,onClick: () -> Unit = {}) {
                             .fillMaxWidth()
                             .padding(top = 20.dp, start = 20.dp, end = 20.dp)
                     ) {
-                        Text(item.title, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                        Text(item.title+" #"+item.id, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
                     }
                     Row(
                         modifier = Modifier
@@ -163,7 +162,7 @@ fun CoffeItem(item: CoffeModel?,onClick: () -> Unit = {}) {
 @Preview(showBackground = true)
 fun PreviewCoffeItem() {
     Column(modifier = Modifier.fillMaxSize()) {
-        CoffeItem(CoffeModel("description", 1, "https://images.unsplash.com/photo-1530373239216-42518e6b4063?auto=format&fit=crop&q=60&w=800&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZnJhcGlubyUyMG1vY2hhfGVufDB8fDB8fHww", null, "title"))
+        CoffeItem(CoffeeModel("description", 1, "https://images.unsplash.com/photo-1530373239216-42518e6b4063?auto=format&fit=crop&q=60&w=800&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZnJhcGlubyUyMG1vY2hhfGVufDB8fDB8fHww", null, "title"))
         //CoffeItem(null)
 
     }

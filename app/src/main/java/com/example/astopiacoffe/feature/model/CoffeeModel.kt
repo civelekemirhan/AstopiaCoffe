@@ -1,6 +1,6 @@
 package com.example.astopiacoffe.feature.model
 
-data class CoffeModel(
+data class CoffeeModel(
     val description: String,
     val id: Int,
     val image: String,
