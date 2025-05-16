@@ -1,12 +1,9 @@
 package com.example.astopiacoffe.feature.ui.mainflow.screen.main
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -29,12 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.PositionalThreshold
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.material3.pulltorefresh.pullToRefreshIndicator
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,9 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,8 +45,6 @@ import com.example.astopiacoffe.feature.component.CoffeItem
 import com.example.astopiacoffe.feature.component.CustomSearchBar
 import com.example.astopiacoffe.feature.model.PassArgument
 import com.example.astopiacoffe.feature.ui.mainflow.screen.MainViewModel
-import com.example.astopiacoffe.feature.ui.mainflow.screen.main.PullToRefreshIndicatorConstants.CROSSFADE_DURATION_MILLIS
-import com.example.astopiacoffe.feature.ui.mainflow.screen.main.PullToRefreshIndicatorConstants.SPINNER_SIZE
 import com.example.astopiacoffe.network.ConnectivityObserver
 import com.example.astopiacoffe.network.NetworkStatus
 import com.example.astopiacoffe.ui.theme.appBackground
@@ -82,7 +68,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
         darkIcons = !theme
     )
 
-    var isRefreshing by remember { mutableStateOf(false) }
+
     val scope = rememberCoroutineScope()
     val coffeeList by viewModel.filteredCoffeeList.collectAsState()
     val searchBarState by viewModel.searchBarText.collectAsState()
@@ -94,7 +80,6 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
     val networkStatus by connectivityObserver.networkStatus.collectAsState(initial = NetworkStatus.Unavailable)
 
     val isInternetAvailable = networkStatus == NetworkStatus.Available
-
     var isErrorMessageVisible by remember {
         mutableStateOf(false)
     }
@@ -102,7 +87,16 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(isInternetAvailable) {
+    LaunchedEffect(Unit) {
+        delay(5000)
+        if(coffeeList.isEmpty()){
+            isErrorMessageVisible = true
+        }else{
+            isErrorMessageVisible = false
+        }
+    }
+
+    LaunchedEffect(isInternetAvailable ) {
         if (isInternetAvailable) {
             scope.launch {
                 viewModel.loadData()
@@ -116,11 +110,6 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
     }
 
     val dummyData = listOf(null, null, null, null)
-
-    LaunchedEffect(coffeeList.isEmpty()) {
-        delay(2000)
-        isErrorMessageVisible = true
-    }
 
 
     Scaffold(
@@ -163,7 +152,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (!isInternetAvailable) {
+            if (!isInternetAvailable && coffeeList.isEmpty()) {
                 if(isProgrressVisible){
                     CircularProgressIndicator()
                 }else{
@@ -192,33 +181,15 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                 ) {
-                    val pullToRefreshState = rememberPullToRefreshState()
-                    PullToRefreshBox(
-                        isRefreshing = isRefreshing,
-                        state = pullToRefreshState,
-                        onRefresh = {
-                            scope.launch {
-                                isRefreshing = true
-                                if (isInternetAvailable) {
-                                    viewModel.loadData()
-                                }
-                                isRefreshing = false
-                            }
-                        },
-                        indicator = {
-                            MyCustomIndicator(
-                                state = pullToRefreshState,
-                                isRefreshing = isRefreshing,
-                                modifier = Modifier.align(Alignment.TopCenter)
-                            )
-                        }
-
-                    ) {
                         LazyColumn {
                             if (coffeeList.isEmpty()) {
-                                if (isErrorMessageVisible) {
+                                if (searchBarState.isNotEmpty()) {
                                     item {
                                         Text(text = "Ürünler Bulunamadı")
+                                    }
+                                }else if(searchBarState.isEmpty() && isErrorMessageVisible) {
+                                    item {
+                                        Text(text = "Bir Hata Oluştu , İşlem çok uzun sürdü")
                                     }
                                 } else {
                                     items(dummyData) {
@@ -243,7 +214,7 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
                             }
 
                         }
-                    }
+
 
                 }
             }
@@ -255,51 +226,4 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
 
 }
 
-
-private object PullToRefreshIndicatorConstants {
-    const val CROSSFADE_DURATION_MILLIS = 100
-    val SPINNER_SIZE = 16.dp
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyCustomIndicator(
-    state: PullToRefreshState,
-    isRefreshing: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.pullToRefreshIndicator(
-            state = state,
-            isRefreshing = isRefreshing,
-            containerColor = PullToRefreshDefaults.containerColor,
-            threshold = PositionalThreshold
-        ),
-        contentAlignment = Alignment.Center
-    ) {
-        Crossfade(
-            targetState = isRefreshing,
-            animationSpec = tween(durationMillis = CROSSFADE_DURATION_MILLIS),
-            modifier = Modifier.align(Alignment.Center)
-        ) { refreshing ->
-            if (refreshing) {
-                CircularProgressIndicator(Modifier.size(SPINNER_SIZE))
-            } else {
-                val distanceFraction = { state.distanceFraction.coerceIn(0f, 1f) }
-                Icon(
-                    painter = painterResource(R.drawable.replay_icon),
-                    contentDescription = "Refresh",
-                    modifier = Modifier
-                        .size(18.dp)
-                        .graphicsLayer {
-                            val progress = distanceFraction()
-                            this.alpha = progress
-                            this.scaleX = progress
-                            this.scaleY = progress
-                        }
-                )
-            }
-        }
-    }
-}
 
