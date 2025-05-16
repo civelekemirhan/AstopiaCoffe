@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,10 +38,24 @@ import com.example.astopiacoffe.common.util.Constant.SPLASH_SCREEN_DURATION
 import com.example.astopiacoffe.feature.ui.welcomeflow.screen.WelcomeViewModel
 import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(onNavigate: (targetDestination: String) -> Unit) {
+
+
+    val systemUiController = rememberSystemUiController()
+    val theme = isSystemInDarkTheme()
+
+    systemUiController.setStatusBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
+    systemUiController.setNavigationBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
 
     val viewModel = hiltViewModel<WelcomeViewModel>()
 

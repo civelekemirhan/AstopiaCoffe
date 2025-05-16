@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,6 +62,7 @@ import com.example.astopiacoffe.feature.ui.mainflow.screen.main.PullToRefreshInd
 import com.example.astopiacoffe.network.ConnectivityObserver
 import com.example.astopiacoffe.network.NetworkStatus
 import com.example.astopiacoffe.ui.theme.appBackground
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -68,12 +70,26 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
 
+    val systemUiController = rememberSystemUiController()
+    val theme = isSystemInDarkTheme()
+
+    systemUiController.setStatusBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
+    systemUiController.setNavigationBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
 
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val coffeeList by viewModel.filteredCoffeeList.collectAsState()
     val searchBarState by viewModel.searchBarText.collectAsState()
     val context = LocalContext.current
+    var isProgrressVisible by remember {
+        mutableStateOf(true)
+    }
     val connectivityObserver = remember { ConnectivityObserver(context) }
     val networkStatus by connectivityObserver.networkStatus.collectAsState(initial = NetworkStatus.Unavailable)
 
@@ -90,7 +106,12 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
         if (isInternetAvailable) {
             scope.launch {
                 viewModel.loadData()
+                isProgrressVisible = false
             }
+        }else{
+            isProgrressVisible = true
+            delay(1000)
+            isProgrressVisible = false
         }
     }
 
@@ -143,7 +164,11 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (!isInternetAvailable) {
-                Text(text = "İnternet Bağlantınızı Kontrol Edin")
+                if(isProgrressVisible){
+                    CircularProgressIndicator()
+                }else{
+                    Text(text = "İnternet Bağlantınızı Kontrol Edin")
+                }
             } else {
                 AnimatedVisibility(visible = isSearchBarVisible) {
                     Row(

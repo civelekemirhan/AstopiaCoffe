@@ -1,5 +1,6 @@
 package com.example.astopiacoffe.feature.component
 
+import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -121,8 +123,7 @@ fun CoffeItem(item: CoffeeModel?, onClick: () -> Unit = {}) {
                             .fillMaxWidth()
                             .background(Color.LightGray)
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                            .shimmer(),
+                            .shimmerable(true),
                     )
                 }
                 Column(
@@ -135,19 +136,17 @@ fun CoffeItem(item: CoffeeModel?, onClick: () -> Unit = {}) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp)
                             .background(Color.LightGray)
                             .height(20.dp)
-                            .shimmer()
+                            .shimmerable(true)
                     )
                     Spacer(modifier=Modifier.height(20.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.LightGray)
-                            .padding(start = 20.dp, end = 20.dp)
                             .height(80.dp)
-                            .shimmer()
+                            .shimmerable(true)
                     )
 
                 }
@@ -156,6 +155,23 @@ fun CoffeItem(item: CoffeeModel?, onClick: () -> Unit = {}) {
         }
     }
 
+}
+
+
+@Composable
+fun Modifier.shimmerable(
+    enabled: Boolean,
+    color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+    shape: RoundedCornerShape = RoundedCornerShape(0.dp),
+): Modifier {
+    if (!enabled) return this
+
+    return this
+        .shimmer() // 3rd party library call
+        .background(color = color, shape = shape)
+        .drawWithContent {
+            // Do not draw the actual content.
+        }
 }
 
 @Composable

@@ -2,6 +2,7 @@ package com.example.astopiacoffe.feature.ui.mainflow.screen.detail
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,20 +33,33 @@ import coil.request.ImageRequest
 import com.example.astopiacoffe.feature.ui.mainflow.screen.MainViewModel
 import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun DetailScreen(viewModel: MainViewModel, onNavigateToHome: () -> Unit) {
+
+    val systemUiController = rememberSystemUiController()
+    val theme = isSystemInDarkTheme()
+
+    systemUiController.setStatusBarColor(
+        color = Color.Transparent,
+        darkIcons = false
+    )
+    systemUiController.setNavigationBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
 
     val coffeeItem by viewModel.passArgumentState.collectAsState()
 
     Log.d("DetailScreen", "Coffee Item: $coffeeItem")
 
-    Scaffold { innerPadding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.appBackground)
-                .padding(innerPadding)
+
         ) {
 
             Row(
@@ -139,7 +152,7 @@ fun DetailScreen(viewModel: MainViewModel, onNavigateToHome: () -> Unit) {
             }
 
         }
-    }
+
 
 
 }

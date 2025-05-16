@@ -3,6 +3,7 @@ package com.example.astopiacoffe.feature.ui.welcomeflow.screen.onboarding
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,9 +40,22 @@ import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.appSelectedIndicatorColor
 import com.example.astopiacoffe.ui.theme.appUnSelectedIndicatorColor
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
+
+    val systemUiController = rememberSystemUiController()
+    val theme = isSystemInDarkTheme()
+
+    systemUiController.setStatusBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
+    systemUiController.setNavigationBarColor(
+        color = MaterialTheme.colorScheme.appBackground,
+        darkIcons = !theme
+    )
 
     val viewModel = hiltViewModel<WelcomeViewModel>()
 
