@@ -119,7 +119,7 @@ fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top
             ) {
-                AnimatedVisibility(isBtnEnabled) {
+                AnimatedVisibility(isBtnEnabled,) {
                     CustomAppButton {
                         viewModel.onCompleted(true)
                         onNavigateToMain()

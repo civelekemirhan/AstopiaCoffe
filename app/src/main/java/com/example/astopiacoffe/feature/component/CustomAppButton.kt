@@ -28,18 +28,20 @@ fun CustomAppButton(onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier
+            .background(Color.Transparent)
             .fillMaxWidth(0.6f)
-            .height(45.dp)
-            .background(Color.Transparent),
+            .height(45.dp),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues()
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.appButtonColor)
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                .background(
+                    MaterialTheme.colorScheme.appButtonColor,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(start = 16.dp, end = 16.dp,top = 8.dp, bottom = 8.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -56,8 +58,8 @@ fun CustomAppButton(onClick: () -> Unit) {
 
 @Composable
 @Preview(showBackground = true)
-fun PreviewCustomAppButton(){
-    Column(modifier=Modifier.fillMaxSize()) {
+fun PreviewCustomAppButton() {
+    Column(modifier = Modifier.fillMaxSize()) {
         CustomAppButton {
 
         }

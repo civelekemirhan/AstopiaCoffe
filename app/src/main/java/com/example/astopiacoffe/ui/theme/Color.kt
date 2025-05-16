@@ -32,4 +32,7 @@ val ColorScheme.appSelectedIndicatorColor: Color
     get() = if (isSystemInDarkTheme()) Color(0xFF795548) else Color(0xFF795548)
 val ColorScheme.appUnSelectedIndicatorColor: Color
     @Composable
+    get() = if (isSystemInDarkTheme()) Color(0xFFD9D9D9) else Color(0xFFC9C9C9)
+val ColorScheme.coffeItemColor: Color
+    @Composable
     get() = if (isSystemInDarkTheme()) Color(0xFFD9D9D9) else Color(0xFFD9D9D9)
