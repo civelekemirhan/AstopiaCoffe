@@ -33,126 +33,120 @@ import coil.request.ImageRequest
 import com.example.astopiacoffe.feature.ui.mainflow.screen.MainViewModel
 import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun DetailScreen(viewModel: MainViewModel, onNavigateToHome: () -> Unit) {
+fun DetailScreen(
+    viewModel: MainViewModel,
+    onNavigateToHome: () -> Unit,
+    handleSystemColor: @Composable (systemUiController: SystemUiController) -> Unit
+) {
 
-    val systemUiController = rememberSystemUiController()
-    val theme = isSystemInDarkTheme()
-
-    systemUiController.setStatusBarColor(
-        color = Color.Transparent,
-        darkIcons = false
-    )
-    systemUiController.setNavigationBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
+    handleSystemColor(rememberSystemUiController())
 
     val coffeeItem by viewModel.passArgumentState.collectAsState()
 
     Log.d("DetailScreen", "Coffee Item: $coffeeItem")
 
 
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.appBackground)
+
+    ) {
+
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.appBackground)
-
+                .fillMaxWidth()
+                .fillMaxHeight(0.5f)
         ) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.5f)
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(coffeeItem.image)
-                            .crossfade(true)
-                            .diskCachePolicy(CachePolicy.ENABLED)
-                            .build(),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+            Box(modifier = Modifier.fillMaxSize()) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(coffeeItem.image)
+                        .crossfade(true)
+                        .diskCachePolicy(CachePolicy.ENABLED)
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(),
-                    )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .padding(20.dp)
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp)
-                        ) {
-                            IconButton(onClick = { onNavigateToHome() }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "Back Button",
-                                    tint = Color.White
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Black.copy(alpha = 0.4f))
-                                .padding(20.dp),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                coffeeItem.title,
-                                color = Color.White,
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 20.sp
+                        IconButton(onClick = { onNavigateToHome() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back Button",
+                                tint = Color.White
                             )
                         }
-
                     }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(20.dp)
-            ) {
-                Column {
-                    Text(coffeeItem.description, color = MaterialTheme.colorScheme.reverseTextColor,)
-
-                    Column(
-                        modifier = Modifier.padding(start = 20.dp, top = 16.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Black.copy(alpha = 0.4f))
+                            .padding(20.dp),
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Ingredients:",
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.reverseTextColor,
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                            coffeeItem.title,
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 20.sp
                         )
-
-
-                        coffeeItem.ingredients?.forEach { ingredient ->
-                            Text(
-                                text = "• ${ingredient ?: ""}",
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                color = MaterialTheme.colorScheme.reverseTextColor,
-                                fontSize = 14.sp
-                            )
-                        }
                     }
 
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(20.dp)
+        ) {
+            Column {
+                Text(coffeeItem.description, color = MaterialTheme.colorScheme.reverseTextColor)
+
+                Column(
+                    modifier = Modifier.padding(start = 20.dp, top = 16.dp)
+                ) {
+                    Text(
+                        text = "Ingredients:",
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.reverseTextColor,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+
+                    coffeeItem.ingredients?.forEach { ingredient ->
+                        Text(
+                            text = "• ${ingredient ?: ""}",
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            color = MaterialTheme.colorScheme.reverseTextColor,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
 
             }
 
         }
 
+    }
 
 
 }

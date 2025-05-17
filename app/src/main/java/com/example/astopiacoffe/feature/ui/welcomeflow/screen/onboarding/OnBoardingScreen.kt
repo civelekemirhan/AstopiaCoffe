@@ -40,22 +40,17 @@ import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.appSelectedIndicatorColor
 import com.example.astopiacoffe.ui.theme.appUnSelectedIndicatorColor
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
+fun OnBoardingScreen(
+    onNavigateToMain: () -> Unit,
+    handleSystemColor: @Composable (systemUiController: SystemUiController) -> Unit
+) {
 
-    val systemUiController = rememberSystemUiController()
-    val theme = isSystemInDarkTheme()
+    handleSystemColor(rememberSystemUiController())
 
-    systemUiController.setStatusBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
-    systemUiController.setNavigationBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
 
     val viewModel = hiltViewModel<WelcomeViewModel>()
 
@@ -93,9 +88,11 @@ fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
                         viewModel.onCompleted(true)
                         onNavigateToMain()
                     }) {
-                        Text("Skip->", fontSize = 16.sp,
+                        Text(
+                            "Skip->", fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.reverseTextColor)
+                            color = MaterialTheme.colorScheme.reverseTextColor
+                        )
                     }
                 }
             }
@@ -120,8 +117,8 @@ fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
                 horizontalArrangement = Arrangement.Center
             ) {
 
-                HorizontalIndicator(pagerState = pagerState) { isEnabled->
-                    isBtnEnabled=isEnabled
+                HorizontalIndicator(pagerState = pagerState) { isEnabled ->
+                    isBtnEnabled = isEnabled
                 }
 
             }
@@ -133,7 +130,7 @@ fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top
             ) {
-                AnimatedVisibility(isBtnEnabled,) {
+                AnimatedVisibility(isBtnEnabled) {
                     CustomAppButton {
                         viewModel.onCompleted(true)
                         onNavigateToMain()
@@ -153,7 +150,7 @@ fun OnBoardingScreen(onNavigateToMain: () -> Unit) {
 private fun HorizontalIndicator(pagerState: PagerState, setButtonEnabled: (Boolean) -> Unit) {
     repeat(pagerState.pageCount) { iteration ->
         val color =
-            if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.appSelectedIndicatorColor else MaterialTheme.colorScheme.appUnSelectedIndicatorColor/* TODO  UI Theme moda göre renkler ayarlanmalı */
+            if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.appSelectedIndicatorColor else MaterialTheme.colorScheme.appUnSelectedIndicatorColor
         Box(
             modifier = Modifier
                 .padding(2.dp)
@@ -172,8 +169,18 @@ private fun HorizontalIndicator(pagerState: PagerState, setButtonEnabled: (Boole
 
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun PreviewOnBoardingScreen(){
-    OnBoardingScreen {
+fun PreviewOnBoardingScreen() {
+    OnBoardingScreen({}, { systemUiController ->
+        val theme = isSystemInDarkTheme()
 
-    }
+        systemUiController.setStatusBarColor(
+            color = MaterialTheme.colorScheme.appBackground,
+            darkIcons = !theme
+        )
+        systemUiController.setNavigationBarColor(
+            color = MaterialTheme.colorScheme.appBackground,
+            darkIcons = !theme
+        )
+
+    })
 }

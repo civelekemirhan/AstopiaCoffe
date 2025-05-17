@@ -48,26 +48,20 @@ import com.example.astopiacoffe.feature.ui.mainflow.screen.MainViewModel
 import com.example.astopiacoffe.network.ConnectivityObserver
 import com.example.astopiacoffe.network.NetworkStatus
 import com.example.astopiacoffe.ui.theme.appBackground
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
+fun MainScreen(
+    viewModel: MainViewModel,
+    onNavigateToDetail: () -> Unit,
+    handleSystemColor: @Composable (systemUiController: SystemUiController) -> Unit
+) {
 
-    val systemUiController = rememberSystemUiController()
-    val theme = isSystemInDarkTheme()
-
-    systemUiController.setStatusBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
-    systemUiController.setNavigationBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
-
+    handleSystemColor(rememberSystemUiController())
 
     val scope = rememberCoroutineScope()
     val coffeeList by viewModel.filteredCoffeeList.collectAsState()
@@ -89,20 +83,20 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
 
     LaunchedEffect(Unit) {
         delay(5000)
-        if(coffeeList.isEmpty()){
+        if (coffeeList.isEmpty()) {
             isErrorMessageVisible = true
-        }else{
+        } else {
             isErrorMessageVisible = false
         }
     }
 
-    LaunchedEffect(isInternetAvailable ) {
+    LaunchedEffect(isInternetAvailable) {
         if (isInternetAvailable) {
             scope.launch {
                 viewModel.loadData()
                 isProgrressVisible = false
             }
-        }else{
+        } else {
             isProgrressVisible = true
             delay(1000)
             isProgrressVisible = false
@@ -153,9 +147,9 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (!isInternetAvailable && coffeeList.isEmpty()) {
-                if(isProgrressVisible){
+                if (isProgrressVisible) {
                     CircularProgressIndicator()
-                }else{
+                } else {
                     Text(text = "İnternet Bağlantınızı Kontrol Edin")
                 }
             } else {
@@ -181,39 +175,39 @@ fun MainScreen(viewModel: MainViewModel, onNavigateToDetail: () -> Unit) {
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                 ) {
-                        LazyColumn {
-                            if (coffeeList.isEmpty()) {
-                                if (searchBarState.isNotEmpty()) {
-                                    item {
-                                        Text(text = "Ürünler Bulunamadı")
-                                    }
-                                }else if(searchBarState.isEmpty() && isErrorMessageVisible) {
-                                    item {
-                                        Text(text = "Bir Hata Oluştu , İşlem çok uzun sürdü")
-                                    }
-                                } else {
-                                    items(dummyData) {
-                                        CoffeItem(item = it)
-                                        Spacer(modifier = Modifier.height(20.dp))
-                                    }
+                    LazyColumn {
+                        if (coffeeList.isEmpty()) {
+                            if (searchBarState.isNotEmpty()) {
+                                item {
+                                    Text(text = "Ürünler Bulunamadı")
+                                }
+                            } else if (searchBarState.isEmpty() && isErrorMessageVisible) {
+                                item {
+                                    Text(text = "Bir Hata Oluştu , İşlem çok uzun sürdü")
                                 }
                             } else {
-                                items(coffeeList, key = { it!!.id }) {
-                                    CoffeItem(item = it) {
-                                        val passArgument = PassArgument(
-                                            it!!.title,
-                                            it.image,
-                                            it.description,
-                                            it.ingredients
-                                        )
-                                        viewModel.onEvent(MainEvent.SetPassArgument(passArgument))
-                                        onNavigateToDetail()
-                                    }
+                                items(dummyData) {
+                                    CoffeItem(item = it)
                                     Spacer(modifier = Modifier.height(20.dp))
                                 }
                             }
-
+                        } else {
+                            items(coffeeList, key = { it!!.id }) {
+                                CoffeItem(item = it) {
+                                    val passArgument = PassArgument(
+                                        it!!.title,
+                                        it.image,
+                                        it.description,
+                                        it.ingredients
+                                    )
+                                    viewModel.onEvent(MainEvent.SetPassArgument(passArgument))
+                                    onNavigateToDetail()
+                                }
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
                         }
+
+                    }
 
 
                 }

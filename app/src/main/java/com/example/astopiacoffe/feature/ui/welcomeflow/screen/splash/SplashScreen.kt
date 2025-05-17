@@ -38,24 +38,18 @@ import com.example.astopiacoffe.common.util.Constant.SPLASH_SCREEN_DURATION
 import com.example.astopiacoffe.feature.ui.welcomeflow.screen.WelcomeViewModel
 import com.example.astopiacoffe.ui.theme.appBackground
 import com.example.astopiacoffe.ui.theme.reverseTextColor
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(onNavigate: (targetDestination: String) -> Unit) {
+fun SplashScreen(
+    onNavigate: (targetDestination: String) -> Unit,
+    handleSystemColor: @Composable (SystemUiController) -> Unit
+) {
 
 
-    val systemUiController = rememberSystemUiController()
-    val theme = isSystemInDarkTheme()
-
-    systemUiController.setStatusBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
-    systemUiController.setNavigationBarColor(
-        color = MaterialTheme.colorScheme.appBackground,
-        darkIcons = !theme
-    )
+    handleSystemColor(rememberSystemUiController())
 
     val viewModel = hiltViewModel<WelcomeViewModel>()
 
@@ -66,9 +60,9 @@ fun SplashScreen(onNavigate: (targetDestination: String) -> Unit) {
     LaunchedEffect(key1 = isOnBoardingCompleted) {
         delay(SPLASH_SCREEN_DURATION)
         circularIndicatorVisibility = false
-        if(isOnBoardingCompleted){
+        if (isOnBoardingCompleted) {
             onNavigate(MAIN_NAV_GRAPH)
-        }else{
+        } else {
             onNavigate(ONBOARDING_SCREEN)
         }
     }
@@ -108,7 +102,15 @@ fun SplashScreen(onNavigate: (targetDestination: String) -> Unit) {
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun SplashScreenPreview() {
-    SplashScreen {
+    SplashScreen ({},{systemUiController ->
+        val theme = isSystemInDarkTheme()
 
-    }
+        systemUiController.setStatusBarColor(
+            color = MaterialTheme.colorScheme.appBackground,
+            darkIcons = !theme
+        )
+        systemUiController.setNavigationBarColor(
+            color = MaterialTheme.colorScheme.appBackground,
+            darkIcons = !theme
+        )})
 }
