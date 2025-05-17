@@ -141,7 +141,7 @@ fun MainScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (!isInternetAvailable && coffeeList.isEmpty()) {
+            if (!isInternetAvailable && (coffeeList.isEmpty() && searchBarState.isEmpty())) {
                 if (isProgrressVisible) {
                     CircularProgressIndicator()
                 } else {
