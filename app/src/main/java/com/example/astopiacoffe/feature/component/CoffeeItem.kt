@@ -1,6 +1,5 @@
 package com.example.astopiacoffe.feature.component
 
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

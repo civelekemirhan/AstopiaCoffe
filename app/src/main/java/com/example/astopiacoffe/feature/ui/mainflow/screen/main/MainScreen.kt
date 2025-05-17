@@ -2,7 +2,6 @@ package com.example.astopiacoffe.feature.ui.mainflow.screen.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -83,11 +82,7 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         delay(5000)
-        if (coffeeList.isEmpty()) {
-            isErrorMessageVisible = true
-        } else {
-            isErrorMessageVisible = false
-        }
+        (coffeeList.isEmpty()).also { isErrorMessageVisible = it }
     }
 
     LaunchedEffect(isInternetAvailable) {

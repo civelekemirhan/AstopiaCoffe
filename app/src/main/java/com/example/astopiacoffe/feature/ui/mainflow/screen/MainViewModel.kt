@@ -1,9 +1,5 @@
 package com.example.astopiacoffe.feature.ui.mainflow.screen
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,7 +27,7 @@ class MainViewModel @Inject constructor(private val repository: CoffeeRepository
 
     private val _allCoffeeList = MutableStateFlow<List<CoffeeModel?>>(emptyList())
 
-    // Combined flow for filtered coffee list based on search text
+
     val filteredCoffeeList = combine(_allCoffeeList, _searchBarText) { coffeeList, searchText ->
         if (searchText.isEmpty()) {
             coffeeList
@@ -45,7 +41,6 @@ class MainViewModel @Inject constructor(private val repository: CoffeeRepository
 
     suspend fun loadData() {
         _allCoffeeList.value = repository.getAllCoffees()
-        Log.d("MainViewModel", "Coffee List Loaded")
     }
 
     fun onEvent(event: MainEvent) {
